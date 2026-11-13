@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 
 // Classe principal do projeto
 public class Program
@@ -34,7 +35,7 @@ public class Program
             Console.WriteLine("0 - Sair");
             Console.Write("\nEscolha uma opção: ");
 
-            string opcao = Console.ReadLine();
+            string opcao = Console.ReadLine() ?? "";
 
             switch (opcao)
             {
@@ -126,7 +127,7 @@ public class Program
         do
         {
             Console.Write("Nome: ");
-            nome = Console.ReadLine();
+            nome = Console.ReadLine() ?? "";
 
             if (string.IsNullOrWhiteSpace(nome) || !ApenasLetras(nome))
             {
@@ -139,7 +140,7 @@ public class Program
         do
         {
             Console.Write("Telefone: ");
-            telefone = Console.ReadLine();
+            telefone = Console.ReadLine() ?? "";
             telefone = telefone.Replace("(", "").Replace(")", "").Replace("-", "").Replace(" ", "");
 
             if (telefone.Length != 11 || !telefone.All(char.IsDigit))
@@ -153,7 +154,7 @@ public class Program
         do
         {
             Console.Write("E-mail: ");
-            email = Console.ReadLine();
+            email = Console.ReadLine() ?? "";
 
             if (string.IsNullOrWhiteSpace(email) || !email.Contains("@") || !email.Contains("."))
             {
@@ -243,11 +244,14 @@ public class Program
         {
             Console.Clear();
             Console.Write("Digite a data e horário do agendamento (dd/mm/aaaa hh:mm): ");
-            dataValida = DateTime.TryParse(Console.ReadLine(), out dataHora);
+            // Formato fixo pt-BR: funciona igual em qualquer computador
+            dataValida = DateTime.TryParseExact(Console.ReadLine(), "dd/MM/yyyy HH:mm",
+                             new CultureInfo("pt-BR"), DateTimeStyles.None, out dataHora)
+                         && dataHora > DateTime.Now;
 
             if (!dataValida)
             {
-                Console.WriteLine("Data ou horário inválido.");
+                Console.WriteLine("Data inválida ou já passou. Use o formato dd/mm/aaaa hh:mm.");
                 Console.ReadKey();
             }
 
